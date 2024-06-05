@@ -2,8 +2,8 @@ pipeline {
   agent any
 	
   environment {
-    DOCKERHUB_CREDENTIALS = credentials('optical-token')
-    REMOTE_SERVER = '15.206.145.145'
+    DOCKERHUB_CREDENTIALS = credentials('docker_credential')
+    REMOTE_SERVER = '54.177.235.0'
     REMOTE_USER = 'ubuntu' 	  	  
   }
 	
@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/Sunilmargale/projectopticalarc.git'
+        git branch: 'main', url: 'https://github.com/Ganesh9082/opticalarc.git'
 
       }
     }
@@ -46,8 +46,8 @@ pipeline {
     stage('Build Docker Image') {
 
       steps {
-        sh 'docker build -t opticalarc:latest .'
-        sh 'docker tag opticalproject sunilmargale/opticalarc:latest'
+        sh 'docker build -t opticalarc:tagname .'
+        sh 'docker tag opticalproject ganeshshinde111/opticalarc:latest'
       }
     }
 	  
@@ -63,7 +63,7 @@ pipeline {
 	  
     stage('Push Image to dockerHUb') {
       steps {
-        sh 'docker push sunilmargale/opticalarc:latest'
+        sh 'docker push ganeshshinde111/project:tagname'
       }
       post {
         always {
@@ -78,10 +78,10 @@ pipeline {
     stage('Deploy Docker image to AWS instance') {
       steps {
         script {
-          sshagent(credentials: ['awscred']) {
+          sshagent(credentials: ['aws-cred']) {
           sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker stop javaApp || true && docker rm javaApp || true'"
-	  sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker pull sunilmargale/opticalarc'"
-          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker run --name javaApp -d -p 8081:8081 sunilmargale/opticalarc'"
+	  sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker pull ganeshshinde111/opticalarc'"
+          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker run --name javaApp -d -p 8081:8081 ganeshshinde111/opticalarc'"
           }
         }
       }
