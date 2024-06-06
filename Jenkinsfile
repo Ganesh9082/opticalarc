@@ -2,8 +2,8 @@ pipeline {
   agent any
 	
   environment {
-    DOCKERHUB_CREDENTIALS = credentials('docker_credential')
-    REMOTE_SERVER = '54.177.235.0'
+    DOCKERHUB_CREDENTIALS = credentials('docker_cred')
+    REMOTE_SERVER = '54.219.222.236'
     REMOTE_USER = 'ubuntu' 	  	  
   }
 	
@@ -46,7 +46,7 @@ pipeline {
     stage('Build Docker Image') {
 
       steps {
-        sh 'docker build -t opticalarc:tagname .'
+        sh 'docker build -t opticalarc:latest .'
         sh 'docker tag opticalproject ganeshshinde111/opticalarc:latest'
       }
     }
@@ -63,7 +63,7 @@ pipeline {
 	  
     stage('Push Image to dockerHUb') {
       steps {
-        sh 'docker push ganeshshinde111/project:tagname'
+        sh 'docker push ganeshshinde111/project:latest'
       }
       post {
         always {
